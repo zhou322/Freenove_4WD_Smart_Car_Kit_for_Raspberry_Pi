@@ -1,0 +1,5 @@
+numpy==1.23.3
+opencv-python==4.6.0.66
+Pillow==9.2.0
+PyQt5==5.15.7;  sys_platform!="linux"
+rpi_ws281x==4.3.4; sys_platform=="linux" and platform_machine=="armv7l"

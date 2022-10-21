@@ -1,0 +1,8 @@
+class MODE:
+    OFF = "MODE_OFF"
+    ULTRASONIC_OBSTACLE_DETECTION = "MODE_ULTRASONIC"
+    FOLLOW_LIGHT = "MODE_LIGHT"
+    FOLLOW_LINE = "MODE_INFRARED"
+
+    def __init__(self):
+        pass
