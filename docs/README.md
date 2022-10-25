@@ -47,7 +47,7 @@ Included software consists of two parts:
     - [test.py](../code/server/test.py)
 
       Tests various functionality of Smart Car
-    - [thread.py](../code/server/thread.py)
+    - [thread_utils.py](../code/server/thread_utils.py)
 
       Utilities for managing threads
     - [ultrasonic.py](../code/server/ultrasonic.py)
@@ -78,7 +78,7 @@ Included software consists of two parts:
     - [mode.py](../code/client/mode.py)
 
       Enum with Modes exchanged via TCP between client and server
-    - [thread.py](../code/client/thread.py)
+    - [thread_utils.py](../code/client/thread_utils.py)
 
       Utilities for managing threads
     - [video.py](../code/client/video.py)
@@ -113,7 +113,7 @@ sudo sh prerequisites.sh
 
 #### Running server code
 
-To run client, run `main.py` from the `server` directory via `sudo`:
+To run the server, run `main.py` from the `server` directory via `sudo`:
 
 ```shell
 sudo python3 main.py
@@ -145,7 +145,7 @@ pip install -r requirements.txt
 
 #### Running client code
 
-To run client, run `main.py` from the `client` directory:
+To run the client, run `main.py` from the `client` directory:
 
 ```shell
 python3 main.py

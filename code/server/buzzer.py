@@ -25,7 +25,7 @@ class Buzzer:
 def main():
     buzzer = Buzzer()
     buzzer.on()
-    time.sleep(3)
+    time.sleep(1)
     buzzer.off()
 
 

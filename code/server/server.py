@@ -5,7 +5,7 @@ import struct
 from threading import Thread
 
 # noinspection PyUnresolvedReferences
-from picamera2 import Picamera2
+from picamera import PiCamera
 
 from buzzer import *
 from command import COMMAND, COMMAND_SEPARATOR, COMMAND_TERMINATOR
@@ -13,7 +13,7 @@ from led import *
 from light_tracking import *
 from line_tracking import *
 from mode import MODE
-from thread import *
+from thread_utils import *
 from ultrasonic import *
 
 CONTROL_PORT = 5000
@@ -93,17 +93,15 @@ class Server:
             print(e)
             pass
         try:
-            with Picamera2() as camera:
-                config = camera.create_still_configuration(main={'size': (400, 300)})
-                camera.configure(config)
-                camera.start()
+            with PiCamera() as camera:
+                camera.resolution = (400, 300)  # pi camera resolution
+                camera.framerate = 15  # 15 frames/sec
                 time.sleep(2)  # give 2 secs for camera to initialize
                 memory_buffer = io.BytesIO()
                 # send jpeg format video stream
                 print("Start transmit ... ")
-                while True:
+                for _ in camera.capture_continuous(memory_buffer, 'jpeg', use_video_port=True):
                     try:
-                        camera.capture_file(memory_buffer, format='jpeg')
                         self.video_stream.flush()
                         memory_buffer.seek(0)
                         b = memory_buffer.read()

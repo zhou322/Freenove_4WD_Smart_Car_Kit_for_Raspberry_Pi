@@ -1,14 +1,9 @@
-from picamera2 import Picamera2
+from picamera import PiCamera
 
 
 def main():
-    camera = Picamera2()
-    config = camera.create_still_configuration(main={'size': (400, 300)})
-    camera.configure(config)
-
-    camera.start()
-    camera.capture_file('image.jpg', 'main')
-    camera.stop()
+    camera = PiCamera()
+    camera.capture('image.jpg')
 
 
 if __name__ == '__main__':

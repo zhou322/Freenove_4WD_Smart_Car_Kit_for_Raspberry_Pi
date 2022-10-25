@@ -25,7 +25,7 @@ class Ultrasonic:
             count = count - 1
 
     def get_distance(self):
-        distance_cm = [0, 0, 0, 0, 0]
+        distance_cm = [0, 0, 0]
         for i in range(3):
             self.send_trigger_pulse()
             self.wait_for_echo(True, 10000)
@@ -35,7 +35,7 @@ class Ultrasonic:
             pulse_len = finish - start
             distance_cm[i] = pulse_len / 0.000058
         distance_cm = sorted(distance_cm)
-        return int(distance_cm[2])
+        return int(distance_cm[0])
 
     def run_motor(self, left, middle, right):
         if (left < 30 and middle < 30 and right < 30) or middle < 30:
@@ -101,7 +101,9 @@ def main():
     print('Program is starting ... ')
     ultrasonic = Ultrasonic()
     try:
-        ultrasonic.run()
+        for i in range(10):
+            print("Distance:", ultrasonic.get_distance())
+            time.sleep(1)
     except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
         ultrasonic.destroy()
 

@@ -3,7 +3,7 @@
 import atexit
 from threading import Thread
 
-from thread import *
+from thread_utils import *
 from server import Server
 
 

@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import *
 from client_ui import Ui_Client
 from mode import MODE
 from command import COMMAND, COMMAND_SEPARATOR, COMMAND_TERMINATOR
-from thread import *
+from thread_utils import *
 from video import *
 from control import Control
 
