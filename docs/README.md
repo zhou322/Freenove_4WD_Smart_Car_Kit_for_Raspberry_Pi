@@ -103,13 +103,18 @@ Server exposes several TCP ports:
 
 #### Prerequisites
 
-Server code uses several dependencies listed in the [prerequisites.sh](../code/prerequisites.sh)
-
-To install dependencies, run the following command from `code` directory:
-
-```shell
-sudo sh prerequisites.sh
-```
+1. Check out the repository on your Raspberry Pi:
+   ```shell
+   git clone --depth 1 https://github.com/artemy/Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi.git
+   ```
+2. Change into `cd Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi/code/` directory
+   ```shell
+   cd cd Freenove_4WD_Smart_Car_Kit_for_Raspberry_Pi/code/
+   ```
+3. Install required dependencies from the [prerequisites.sh](../code/prerequisites.sh)
+   ```shell
+   sudo sh prerequisites.sh
+   ```
 
 #### Running server code
 

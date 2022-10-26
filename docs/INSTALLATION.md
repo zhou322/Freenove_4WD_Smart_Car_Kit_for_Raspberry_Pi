@@ -33,11 +33,10 @@ Once it is boots, you should be able to connect to it via SSH by using the hostn
 
 To configure Raspberry Pi to work with Smart Car peripherals, perform the following commands over SSH:
 
-1. System and kernel update:
+1. System update:
     ```shell
-    - sudo apt-get update
-    - sudo apt-get dist-upgrade
-    - sudo rpi-update
+    sudo apt-get update
+    sudo apt-get dist-upgrade
     ```
 2. Peripheral configuration
    Run the Raspberry Pi Configuration tool with the following command:
