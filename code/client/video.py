@@ -6,6 +6,7 @@ import sys
 import cv2
 import numpy as np
 from PIL import Image
+from image_processing import *
 
 
 class VideoStreaming:
@@ -56,6 +57,15 @@ class VideoStreaming:
                 self.face_y = 0
         cv2.imwrite('video.jpg', img)
 
+    def line_detect(self, img):
+        try:
+            image_with_lines = process_image(img)
+            print('lines drawn')
+            cv2.imwrite('tmp.jpg', image_with_lines)
+            cv2.imwrite('video.jpg', image_with_lines)
+        except Exception:
+            print("exception")
+
     def start_streaming(self):
         while True:
             try:
@@ -66,6 +76,7 @@ class VideoStreaming:
                     image = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
                     if self.connected:
                         self.face_detect(image)
+                        self.line_detect(image)
                         self.connected = False
             except Exception as e:
                 print(e)
