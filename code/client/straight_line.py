@@ -31,8 +31,8 @@ class CustomClient:
             return
         try:
             self.video_streaming = VideoStreaming(self.target_host)
-            self.streaming_thread = Thread(target=self.video_streaming.start_streaming(control=self.control))
-            self.streaming_thread.start()
+            # self.streaming_thread = Thread(target=self.video_streaming.start_streaming(control=self.control))
+            # self.streaming_thread.start()
         except Exception as e:
             print(e)
             print('video error')

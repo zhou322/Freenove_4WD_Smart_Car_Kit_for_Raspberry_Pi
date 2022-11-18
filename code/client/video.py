@@ -2,6 +2,7 @@ import io
 import socket
 import struct
 import sys
+import time
 
 import cv2
 import numpy as np
@@ -84,7 +85,8 @@ class VideoStreaming:
                     if self.connected:
                         # self.face_detect(image)
                         self.line_detect(image, control)
-                        self.connected = False
+                        time.sleep(0.5)
+                        # self.connected = False
             except Exception as e:
                 print(e)
 
