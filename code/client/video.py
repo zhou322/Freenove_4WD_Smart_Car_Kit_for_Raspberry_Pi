@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from image_processing import *
+from command import COMMAND, COMMAND_SEPARATOR, COMMAND_TERMINATOR
 
 
 class VideoStreaming:
@@ -57,14 +58,22 @@ class VideoStreaming:
                 self.face_y = 0
         cv2.imwrite('video.jpg', img)
 
-    def line_detect(self, img):
+    def line_detect(self, img, control):
         try:
             direction = process_image(img)
             print('direction', direction)
+            if direction == 'left':
+                self.go_left(control=control)
+            elif direction == 'middle':
+                self.go_straight(control=control)
+            elif direction == 'right':
+                self.go_right(control=control)
+            else:
+                print('unknown', direction)
         except Exception:
-            print("exception")
+            print("exception +++ 1")
 
-    def start_streaming(self):
+    def start_streaming(self, control):
         while True:
             try:
                 stream_bytes = self.video_connection.read(4)
@@ -73,13 +82,26 @@ class VideoStreaming:
                 if self.is_valid_image4_bytes(jpg):
                     image = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
                     if self.connected:
-                        self.face_detect(image)
-                        self.line_detect(image)
+                        # self.face_detect(image)
+                        self.line_detect(image, control)
                         self.connected = False
             except Exception as e:
                 print(e)
-                break
 
+    def go_left(self, control):
+        turn_left = COMMAND_SEPARATOR + str(-2095) + COMMAND_SEPARATOR + str(-750) + COMMAND_SEPARATOR + str(
+            750) + COMMAND_SEPARATOR + str(750) + COMMAND_TERMINATOR
+        control.send_data(COMMAND.CMD_MOTOR + turn_left)
+
+    def go_right(self, control):
+        turn_right = COMMAND_SEPARATOR + str(750) + COMMAND_SEPARATOR + str(750) + COMMAND_SEPARATOR + str(
+            -750) + COMMAND_SEPARATOR + str(-750) + COMMAND_TERMINATOR
+        control.send_data(COMMAND.CMD_MOTOR + turn_right)
+
+    def go_straight(self, control):
+        forward = COMMAND_SEPARATOR + str(2095) + COMMAND_SEPARATOR + str(2095) + COMMAND_SEPARATOR + str(
+            2095) + COMMAND_SEPARATOR + str(2095) + COMMAND_TERMINATOR
+        control.send_data(COMMAND.CMD_MOTOR + forward)
 
 if __name__ == '__main__':
     pass
