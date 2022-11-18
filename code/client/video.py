@@ -59,10 +59,8 @@ class VideoStreaming:
 
     def line_detect(self, img):
         try:
-            image_with_lines = process_image(img)
-            print('lines drawn')
-            cv2.imwrite('tmp.jpg', image_with_lines)
-            cv2.imwrite('video.jpg', image_with_lines)
+            direction = process_image(img)
+            print('direction', direction)
         except Exception:
             print("exception")
 

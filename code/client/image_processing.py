@@ -66,9 +66,26 @@ def get_intersect(a1, a2, b1, b2):
         return (float('inf'), float('inf'))
     return (x/z, y/z)
 
+def get_driection(image, intersection):
+    # (height, width)
+    shape = image.shape
+    width = shape[1]
+    width_area = width / 3
+
+    intersection_x = intersection[0]
+
+    if intersection_x <= width_area:
+        return 'left'
+    elif width_area < intersection_x <= width_area * 2:
+        return 'middle'
+    elif width_area * 2 < intersection_x <= width:
+        return 'right'
+    else:
+        return 'unknown'
+
 def process_image(image):
     # Read image
-    # image = cv2.imread('line_to_the_left.jpg')
+    # image = cv2.imread('001.jpg')
 
 
     # Convert image to grayscale
@@ -76,7 +93,7 @@ def process_image(image):
     # converted_image = HSL_color_selection(converted_image)
 
     # Use canny edge detection
-    edges = cv2.Canny(converted_image,50,200)
+    edges = cv2.Canny(converted_image, 100, 200)
     # cv2.imwrite('tmp.png',edges)
 
 
@@ -87,8 +104,8 @@ def process_image(image):
         edges, # Input edge image
         1, # Distance resolution in pixels
         np.pi/180, # Angle resolution in radians
-        threshold=150, # Min number of votes for valid line
-        minLineLength=5, # Min allowed length of line
+        threshold=125, # Min number of votes for valid line
+        minLineLength=10, # Min allowed length of line
         maxLineGap=10 # Max allowed gap between line for joining them
     )
 
@@ -98,7 +115,7 @@ def process_image(image):
         thickness=5,
     )
 
-    # cv2.imwrite('tmp.png',tmp_image)
+    # cv2.imwrite('tmp.jpg',tmp_image)
 
     left_line_x = []
     left_line_y = []
@@ -109,7 +126,7 @@ def process_image(image):
             # print((x1, y1), (x2, y2))
             slope = (y2 - y1) / (x2 - x1) # <-- Calculating the slope.
             # print(slope)
-            if math.fabs(slope) < 0.5: # <-- Only consider extreme slope
+            if math.fabs(slope) < 0.25: # <-- Only consider extreme slope
                 continue
             if slope <= 0: # <-- If the slope is negative, left group.
                 left_line_x.extend([x1, x2])
@@ -123,8 +140,9 @@ def process_image(image):
                                  (left_line_x[1], left_line_y[1]),
                                  (right_line_x[0], right_line_y[0]),
                                  (right_line_x[1], right_line_y[1]))
-
-    min_y = intersection[1]
+    # print("intersection", intersection)
+    # min_y = intersection[1]
+    min_y = 0
     max_y = image.shape[0] # <-- The bottom of the image
     # print(min_y, max_y)
     poly_left = np.poly1d(np.polyfit(
@@ -149,7 +167,12 @@ def process_image(image):
         ]],
         thickness=5,
     )
-    return line_image
+    # cv2.imwrite('detectedLines.jpg',line_image)
+    get_driection(line_image, intersection)
+    cv2.imwrite('video.jpg', line_image)
+
+    return get_driection(line_image, intersection)
 
     # Save the result image
-    # cv2.imwrite('detectedLines.png',line_image)
+
+# process_image()
