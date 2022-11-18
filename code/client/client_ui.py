@@ -794,7 +794,7 @@ class Ui_Client(object):
     def retranslateUi(self, Client):
         _translate = QtCore.QCoreApplication.translate
         Client.setWindowTitle(_translate("Client", "freenove"))
-        self.IP.setText(_translate("Client", "IP Address"))
+        self.IP.setText(_translate("Client", "raspberrypi-00.local"))
         self.Btn_Connect.setText(_translate("Client", "Connect"))
         self.Btn_Video.setText(_translate("Client", "Show Video"))
         self.Btn_Turn_Left.setText(_translate("Client", "Turn Left"))
