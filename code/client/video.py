@@ -60,21 +60,20 @@ class VideoStreaming:
         cv2.imwrite('video.jpg', img)
 
     def line_detect(self, img, control):
-        try:
-            direction = process_image(img)
-            print('direction', direction)
-            if direction == 'left':
-                self.go_left(control=control)
-            elif direction == 'middle':
-                self.go_straight(control=control)
-            elif direction == 'right':
-                self.go_right(control=control)
-            else:
-                print('unknown', direction)
-        except Exception:
-            print("exception +++ 1")
+        direction = process_image(img)
+        print('direction', direction)
+        if direction == 'left':
+            self.go_left(control=control)
+        elif direction == 'middle':
+            self.go_straight(control=control)
+        elif direction == 'right':
+            self.go_right(control=control)
+        else:
+            print('unknown', direction)
 
     def start_streaming(self, control):
+        arr = ['left', 'right', 'right', 'left']
+        i = 0
         while True:
             try:
                 stream_bytes = self.video_connection.read(4)
@@ -82,28 +81,56 @@ class VideoStreaming:
                 jpg = self.video_connection.read(leng[0])
                 if self.is_valid_image4_bytes(jpg):
                     image = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+                    cv2.imwrite('raw_image.jpg', image)
                     if self.connected:
                         # self.face_detect(image)
                         self.line_detect(image, control)
-                        time.sleep(0.5)
-                        # self.connected = False
+                        time.sleep(1)
             except Exception as e:
                 print(e)
+                print(i)
+                if arr[i] == 'left':
+                    print('go left to find the lines')
+                    self.go_left(control)
+                    time.sleep(1)
+                    i = i + 1
+                    if i > 3:
+                        i = 0
+                elif arr[i] == 'right':
+                    print('go right to find the lines')
+                    self.go_right(control)
+                    time.sleep(1)
+                    i = i + 1
+                    if i > 3:
+                        i = 0
+
 
     def go_left(self, control):
-        turn_left = COMMAND_SEPARATOR + str(-2095) + COMMAND_SEPARATOR + str(-750) + COMMAND_SEPARATOR + str(
-            750) + COMMAND_SEPARATOR + str(750) + COMMAND_TERMINATOR
+        turn_left = COMMAND_SEPARATOR + str(-1095) + COMMAND_SEPARATOR + str(-1095) + COMMAND_SEPARATOR + str(
+            1095) + COMMAND_SEPARATOR + str(1095) + COMMAND_TERMINATOR
         control.send_data(COMMAND.CMD_MOTOR + turn_left)
+        time.sleep(0.3)
+        self.stop(control)
+
 
     def go_right(self, control):
-        turn_right = COMMAND_SEPARATOR + str(750) + COMMAND_SEPARATOR + str(750) + COMMAND_SEPARATOR + str(
-            -750) + COMMAND_SEPARATOR + str(-750) + COMMAND_TERMINATOR
+        turn_right = COMMAND_SEPARATOR + str(1095) + COMMAND_SEPARATOR + str(1095) + COMMAND_SEPARATOR + str(
+            -1095) + COMMAND_SEPARATOR + str(-1095) + COMMAND_TERMINATOR
         control.send_data(COMMAND.CMD_MOTOR + turn_right)
+        time.sleep(0.3)
+        self.stop(control)
 
     def go_straight(self, control):
-        forward = COMMAND_SEPARATOR + str(2095) + COMMAND_SEPARATOR + str(2095) + COMMAND_SEPARATOR + str(
-            2095) + COMMAND_SEPARATOR + str(2095) + COMMAND_TERMINATOR
+        forward = COMMAND_SEPARATOR + str(1095) + COMMAND_SEPARATOR + str(1095) + COMMAND_SEPARATOR + str(
+            1095) + COMMAND_SEPARATOR + str(1095) + COMMAND_TERMINATOR
         control.send_data(COMMAND.CMD_MOTOR + forward)
+        time.sleep(0.5)
+        self.stop(control)
+
+    def stop(self, control):
+        stop = COMMAND_SEPARATOR + str(0) + COMMAND_SEPARATOR + str(0) + COMMAND_SEPARATOR + str(
+            0) + COMMAND_SEPARATOR + str(0) + COMMAND_TERMINATOR
+        control.send_data(COMMAND.CMD_MOTOR + stop)
 
 if __name__ == '__main__':
     pass

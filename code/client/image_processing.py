@@ -2,6 +2,15 @@ import cv2
 import numpy as np
 import math
 
+
+def region_of_interest(img, vertices):
+    mask = np.zeros_like(img)
+    channel_count = img.shape[2]
+    match_mask_color = (255,) * channel_count
+    cv2.fillPoly(mask, vertices, match_mask_color)
+    masked_image = cv2.bitwise_and(img, mask)
+    return masked_image
+
 def draw_lines(img, lines, color=[0, 255, 0], thickness=3):
     # If there are no lines to draw, exit.
     if lines is None:
@@ -35,9 +44,9 @@ def HSL_color_selection(image):
     #Convert the input image to HSL
     # converted_image = convert_hsl(image)
 
-    converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV )
+    converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     #White color mask
-    sensitivity = 50
+    sensitivity = 150
     lower_threshold = np.uint8([0, 0, 255 - sensitivity])
     upper_threshold = np.uint8([255, sensitivity, 255])
     white_mask = cv2.inRange(converted_image, lower_threshold, upper_threshold)
@@ -89,13 +98,25 @@ def process_image(image):
 
 
     # Convert image to grayscale
-    converted_image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
-    # converted_image = HSL_color_selection(converted_image)
+    # converted_image = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+    shape = image.shape
+    region_of_interest_vertices = [
+        (0, shape[0]),
+        (0, shape[0] / 2),
+        (shape[1], shape[0] / 2),
+        (shape[1], shape[0]),
+    ]
+
+    cropped_image = region_of_interest(
+        image,
+        np.array([region_of_interest_vertices], np.int32),
+    )
+    # cv2.imwrite('tmp.jpg',cropped_image)
+    converted_image = HSL_color_selection(cropped_image)
 
     # Use canny edge detection
-    edges = cv2.Canny(converted_image, 100, 200)
-    # cv2.imwrite('tmp.png',edges)
-
+    edges = cv2.Canny(converted_image, 50, 200)
+    # cv2.imwrite('tmp.jpg',edges)
 
     # Apply HoughLinesP method to
     # to directly obtain line end points
@@ -104,7 +125,7 @@ def process_image(image):
         edges, # Input edge image
         1, # Distance resolution in pixels
         np.pi/180, # Angle resolution in radians
-        threshold=125, # Min number of votes for valid line
+        threshold=60, # Min number of votes for valid line
         minLineLength=10, # Min allowed length of line
         maxLineGap=10 # Max allowed gap between line for joining them
     )
@@ -126,7 +147,7 @@ def process_image(image):
             # print((x1, y1), (x2, y2))
             slope = (y2 - y1) / (x2 - x1) # <-- Calculating the slope.
             # print(slope)
-            if math.fabs(slope) < 0.25: # <-- Only consider extreme slope
+            if math.fabs(slope) < 0.5: # <-- Only consider extreme slope
                 continue
             if slope <= 0: # <-- If the slope is negative, left group.
                 left_line_x.extend([x1, x2])
@@ -168,11 +189,11 @@ def process_image(image):
         thickness=5,
     )
     # cv2.imwrite('detectedLines.jpg',line_image)
-    get_driection(line_image, intersection)
     cv2.imwrite('video.jpg', line_image)
-
     return get_driection(line_image, intersection)
 
     # Save the result image
 
-# process_image()
+if __name__ == '__main__':
+    image = cv2.imread('raw_image.jpg')
+    asdf = process_image(image)
